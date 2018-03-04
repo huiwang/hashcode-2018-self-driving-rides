@@ -1,3 +1,5 @@
+This score is achieved during the extended round. I attempted a simulated-annealing approach and failed at the qualification round.
+
 # Score
 
 Total score 49,736,887
@@ -22,7 +24,7 @@ A vehicle can take only one ride
 The objective aims to reduce the waste for an assignment. Waste is the sum of ride transition distance and waiting time.
 
 We include both current and future waste. Current waste measures how much it costs to start the next ride. Future waste represents
-the difficulty to find a new ride once we finish the next ride.
+the difficulty to find a new ride once we finish the next one.
 
 # How to Run
 
