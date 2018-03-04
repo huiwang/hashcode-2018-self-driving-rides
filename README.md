@@ -17,8 +17,9 @@ The problem is cut into sub-problems. In a sub-problem, we assign the next ride 
 X(r,v) is a variable which indicates we assign ride R to vehicle V.
 
 ## Ride Constraints
-A ride can only be assigned to one vehicle
-A vehicle can take only one ride
+A ride can only be assigned to one vehicle.
+
+A vehicle can take only one ride.
 
 ## Objective
 The objective aims to reduce the waste for an assignment. Waste is the sum of ride transition distance and waiting time.
