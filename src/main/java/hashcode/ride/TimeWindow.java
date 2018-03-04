@@ -3,12 +3,10 @@ package hashcode.ride;
 public class TimeWindow {
     int earliest;
     int latest;
-    int length;
 
     TimeWindow(int earliest, int latest) {
         this.earliest = earliest;
         this.latest = latest;
-        length = latest - earliest;
     }
 
     @Override

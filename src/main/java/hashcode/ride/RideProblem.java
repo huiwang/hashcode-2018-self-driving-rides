@@ -16,7 +16,7 @@ public class RideProblem {
     List<Ride> rideList;
     Map<Ride, Set<Ride>> neighbors;
 
-    public RideProblem(int rows, int cols, int vehicles, int bonus, int steps, List<Ride> rideList) {
+    RideProblem(int rows, int cols, int vehicles, int bonus, int steps, List<Ride> rideList) {
         this.rows = rows;
         this.cols = cols;
         this.vehicles = vehicles;

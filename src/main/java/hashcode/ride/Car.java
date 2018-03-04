@@ -2,14 +2,13 @@ package hashcode.ride;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 class Car {
     final int id;
     List<Ride> rides;
     int score;
 
-    private Status status;
+    Status status;
 
     Car(int id) {
         this.id = id;
@@ -28,10 +27,6 @@ class Car {
         status = moved;
     }
 
-    private int computeWaste(Ride ride, Status moved) {
-        return moved.step - status.step - ride.distance;
-    }
-
     private int incrementalScore(Status moved, Ride ride) {
         int currentScore = 0;
         if (moved.step <= ride.timeWindow.latest) {
@@ -43,7 +38,7 @@ class Car {
         return currentScore;
     }
 
-    private Status take(Status status, Ride ride) {
+    Status take(Status status, Ride ride) {
         int step = status.step + status.intersection.distance(ride.start);
         step = Math.max(step, ride.timeWindow.earliest);
         step += ride.distance;
@@ -51,30 +46,6 @@ class Car {
         return new Status(step, intersection);
     }
 
-    boolean feasible(Ride ride) {
-        Status move = take(status, ride);
-        return move.step <= ride.timeWindow.latest;
-    }
-
-    double heuristic(Ride ride, RideProblem problem, Set<Ride> remaining) {
-        Status moved = take(status, ride);
-        int waste = computeWaste(ride, moved);
-        int futureWaste = getFutureWaste(moved, ride, remaining, problem);
-
-        int base = 1000000;
-        double normalizedWaste = 0.1 * waste;
-        double normalizedPotential = 0.01 * futureWaste;
-        return base - normalizedWaste - normalizedPotential;
-    }
-
-    private int getFutureWaste(Car.Status moved, Ride ride, Set<Ride> remaining, RideProblem problem) {
-        int waste = problem.neighbors.get(ride).stream().filter(remaining::contains)
-                .filter(r -> r.timeWindow.latest >= moved.step + r.start.distance(ride.end) + r.distance)
-                .mapToInt(r -> moved.intersection.distance(r.start) + Math.max(0, r.timeWindow.earliest - moved.step - moved.intersection.distance(r.start)))
-                .min()
-                .orElse(problem.rows + problem.cols);
-        return Math.min(problem.steps - moved.step, waste);
-    }
 
     public static class Status {
         int step;

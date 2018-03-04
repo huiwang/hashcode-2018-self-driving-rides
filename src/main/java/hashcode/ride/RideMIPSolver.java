@@ -27,7 +27,7 @@ public class RideMIPSolver {
 
         for (Ride ride : rides) {
             for (Car car : cars) {
-                if (car.feasible(ride)) {
+                if (feasible(car, ride)) {
                     assignment.put(ride, car, mpSolver.makeIntVar(0.0, 1.0, "Assign R " + ride.id + " V " + car.id));
                 }
             }
@@ -38,7 +38,7 @@ public class RideMIPSolver {
         for (Ride ride : rides) {
             for (Car car : cars) {
                 MPVariable mpVariable = assignment.get(ride, car);
-                double heuristic = car.heuristic(ride, problem, remaining);
+                double heuristic = heuristic(car, ride, problem, remaining);
                 objective.setCoefficient(mpVariable, heuristic);
             }
         }
@@ -78,5 +78,34 @@ public class RideMIPSolver {
         }
 
         return result;
+    }
+
+    private double heuristic(Car car, Ride ride, RideProblem problem, Set<Ride> remaining) {
+        Car.Status moved = car.take(car.status, ride);
+        int waste = computeCurrentWaste(ride, car.status, moved);
+        int futureWaste = computeFutureWaste(moved, ride, remaining, problem);
+
+        int base = 1000000;
+        double normalizedWaste = 0.1 * waste;
+        double normalizedPotential = 0.01 * futureWaste;
+        return base - normalizedWaste - normalizedPotential;
+    }
+
+    private int computeCurrentWaste(Ride ride, Car.Status current, Car.Status moved) {
+        return moved.step - current.step - ride.distance;
+    }
+
+    private boolean feasible(Car car, Ride ride) {
+        Car.Status moved = car.take(car.status, ride);
+        return moved.step <= ride.timeWindow.latest;
+    }
+
+    private int computeFutureWaste(Car.Status moved, Ride ride, Set<Ride> remaining, RideProblem problem) {
+        int waste = problem.neighbors.get(ride).stream().filter(remaining::contains)
+                .filter(r -> r.timeWindow.latest >= moved.step + r.start.distance(ride.end) + r.distance)
+                .mapToInt(r -> moved.intersection.distance(r.start) + Math.max(0, r.timeWindow.earliest - moved.step - moved.intersection.distance(r.start)))
+                .min()
+                .orElse(problem.rows + problem.cols);
+        return Math.min(problem.steps - moved.step, waste);
     }
 }
