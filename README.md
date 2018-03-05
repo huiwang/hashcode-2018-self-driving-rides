@@ -1,4 +1,4 @@
-This score is achieved during the extended round. I attempted a simulated-annealing approach and failed at the qualification round.
+This score is achieved with integer programming during the extended round. I attempted a simulated-annealing approach during the qualification round but failed to have a good score.
 
 # Score
 
@@ -36,3 +36,7 @@ the difficulty to find a new ride once we finish the next one.
   -DgroupId=com.google -DartifactId=com.google.ortools -Dversion=6.4 -Dpackaging=jar
   ```
 - Run RideIo with -Djava.library.path=/Users/hwang/Developer/or-tools_MacOsX-10.12.6_v6.4.4495/lib
+
+# Tuning
+
+According to the configuration, you may need to tune certain parameters (MIP problem size, heuristic) to have good enough score.
